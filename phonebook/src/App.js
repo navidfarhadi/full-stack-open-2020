@@ -12,6 +12,12 @@ const App = () =>
     event.preventDefault()
     if (newName === "") return
 
+    if(persons.some(person => person.name === newName))
+    {
+      alert(`${newName} is already added to phonebook`)
+      return
+    }
+
     const newPerson = {
       name: newName,
       id: persons.length + 1
