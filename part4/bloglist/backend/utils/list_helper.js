@@ -25,7 +25,13 @@ const mostBlogs = (blogs) => {
     return null
 
   const numBlogsByAuthor = _.countBy(blogs, 'author')
-  return _.maxBy(_.keys(numBlogsByAuthor), function (input) { return numBlogsByAuthor[input] })
+  const authorWithMostBlogs = _.maxBy(_.keys(numBlogsByAuthor), function (input) { return numBlogsByAuthor[input] })
+  return { author: authorWithMostBlogs, blogs: numBlogsByAuthor[authorWithMostBlogs] }
+}
+
+const mostLikes = (blogs) => {
+  if (blogs.length === 0)
+    return null
 }
 
 module.exports = {
