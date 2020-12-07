@@ -63,11 +63,11 @@ describe('most blogs', () => {
 
   test('when list has only one blog, returns that author', () => {
     const result = listHelper.mostBlogs(listWithOneBlog)
-    expect(result).toBe('Michael Chan')
+    expect(result).toEqual({ author: 'Michael Chan', blogs: 1 })
   })
 
   test('when list has multiple blogs, returns author with most blogs', () => {
     const result = listHelper.mostBlogs(listWithMultipleBlogs)
-    expect(result).toBe('Robert C. Martin')
+    expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
   })
 })
