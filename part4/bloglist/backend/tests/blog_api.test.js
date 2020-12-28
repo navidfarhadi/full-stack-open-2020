@@ -30,57 +30,76 @@ test('unique identifier is named id', async () => {
   response.body.map((blog) => expect(blog).toHaveProperty('id'))
 })
 
-test('a valid blog can be added', async () => {
-  const newBlog = {
-    title: 'How to make fried rice',
-    author: 'Dr. Fried McRice',
-    url: 'http://fried.rice',
-    likes: '749'
-  }
+describe('tests with token authentication', () => {
+  let token = null
+  beforeEach(async () => {
+    await User.deleteMany({})
 
-  await api.post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
 
-  const blogsAtEnd = await helper.blogsinDB()
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    await user.save()
 
-  const titles = blogsAtEnd.map(blogs => blogs.title)
-  expect(titles).toContain(newBlog.title)
-})
+    await api.post('/api/login')
+      .send({ username: 'root', password: 'sekret' })
+      .then(response => token = response.body.token)
+  })
 
-test('if likes property is missing in the request, defaults to 0', async () => {
-  const newBlog = {
-    title: 'How to make fried rice',
-    author: 'Dr. Fried McRice',
-    url: 'http://fried.rice'
-  }
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'How to make fried rice',
+      author: 'Dr. Fried McRice',
+      url: 'http://fried.rice',
+      likes: '749'
+    }
 
-  await api.post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  const blogsAtEnd = await helper.blogsinDB()
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    const blogsAtEnd = await helper.blogsinDB()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-  const titles = blogsAtEnd.map(blogs => blogs.title)
-  expect(titles).toContain(newBlog.title)
+    const titles = blogsAtEnd.map(blogs => blogs.title)
+    expect(titles).toContain(newBlog.title)
+  })
 
-  const returnedBlog = blogsAtEnd.find(blog => blog.title === newBlog.title)
-  expect(returnedBlog.likes).toEqual(0)
-})
+  test('if likes property is missing in the request, defaults to 0', async () => {
+    const newBlog = {
+      title: 'How to make fried rice',
+      author: 'Dr. Fried McRice',
+      url: 'http://fried.rice'
+    }
 
-test('if title and url properties are missing, backend responds with 400 bad request', async () => {
-  const newBlog = {
-    author: 'Dr. Fried McRice',
-    likes: 23
-  }
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  await api.post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
+    const blogsAtEnd = await helper.blogsinDB()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+    const titles = blogsAtEnd.map(blogs => blogs.title)
+    expect(titles).toContain(newBlog.title)
+
+    const returnedBlog = blogsAtEnd.find(blog => blog.title === newBlog.title)
+    expect(returnedBlog.likes).toEqual(0)
+  })
+
+  test('if title and url properties are missing, backend responds with 400 bad request', async () => {
+    const newBlog = {
+      author: 'Dr. Fried McRice',
+      likes: 23
+    }
+
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 describe('when there is initially one user in db', () => {
