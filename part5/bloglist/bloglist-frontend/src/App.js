@@ -17,10 +17,13 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  // useEffect(async () => {
+  //   const blogs = await blogService.getAll()
+  //   setBlogs(blogs)
+  // }, [])
+
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    refreshBlogs()
   }, [])
 
   useEffect(() => {
@@ -68,8 +71,6 @@ const App = () => {
   const addBlog = async (blogObject) => {
 
     try {
-      
-
       const returnedBlog = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
 
@@ -84,6 +85,11 @@ const App = () => {
         setNotification({ ...notification, message: null, type: null })
       }, 5000)
     }
+  }
+
+  const refreshBlogs = async () => {
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
   }
 
   const blogForm = () => (
@@ -102,7 +108,7 @@ const App = () => {
       <br></br>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} refreshBlogs={refreshBlogs} />
       )}
     </>
   )

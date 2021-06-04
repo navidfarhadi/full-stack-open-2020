@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog }) => {
+import blogService from '../services/blogs'
+
+const Blog = ({ blog, refreshBlogs }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -16,6 +14,22 @@ const Blog = ({ blog }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5
+  }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+  const handleLike = async (event) => {
+    event.preventDefault()
+    const updatedBlog = {...blog, likes: blog.likes + 1, user: blog.user.id}
+
+    try {
+      await blogService.update(blog.id,updatedBlog)
+      refreshBlogs()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -32,7 +46,7 @@ const Blog = ({ blog }) => {
           <button onClick={toggleVisibility}>cancel</button>
         </div>
         <div>url: {blog.url}</div>
-        <div>likes: {blog.likes}</div>
+        <div>likes: {blog.likes} {" "} <button onClick={handleLike}>like</button></div>
         <div>added by: {blog.user.name}</div>
       </div>
     </div>
