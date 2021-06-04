@@ -83,6 +83,40 @@ const App = () => {
     }
   }
 
+  const handleLike = async (blog) => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
+
+    try {
+      await blogService.update(blog.id, updatedBlog)
+      refreshBlogs()
+    } catch (exception) {
+      setNotification({ ...notification, message: exception.response.data.error, type: "error" })
+      setTimeout(() => {
+        setNotification({ ...notification, message: null, type: null })
+      }, 5000)
+    }
+  }
+
+  const handleRemove = async (blog) => {
+
+    if (window.confirm(`Are you sure you want to remove blog \"${blog.title}\" by \"${blog.author}\"?`)) {
+      try {
+        const returnedBlog = await blogService.remove(blog.id)
+        await refreshBlogs()
+
+        setNotification({ ...notification, message: `blog \"${blog.title}\" by \"${blog.author}\" removed`, type: "notification" })
+        setTimeout(() => {
+          setNotification({ ...notification, message: null, type: null })
+        }, 5000)
+      } catch (exception) {
+        setNotification({ ...notification, message: exception.response.data.error, type: "error" })
+        setTimeout(() => {
+          setNotification({ ...notification, message: null, type: null })
+        }, 5000)
+      }
+    }
+  }
+
   const refreshBlogs = async () => {
     const blogs = await blogService.getAll()
     setBlogs(blogs)
@@ -105,7 +139,15 @@ const App = () => {
 
       {blogs
         .sort((a, b) => b.likes - a.likes)
-        .map(blog => <Blog key={blog.id} blog={blog} refreshBlogs={refreshBlogs} user={user} />)
+        .map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
+          />
+        )
       }
     </>
   )

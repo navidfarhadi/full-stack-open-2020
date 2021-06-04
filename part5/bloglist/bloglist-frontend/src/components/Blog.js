@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, refreshBlogs, user }) => {
+const Blog = ({ blog, user, handleLike, handleRemove }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -22,31 +22,6 @@ const Blog = ({ blog, refreshBlogs, user }) => {
     setVisible(!visible)
   }
 
-  const handleLike = async (event) => {
-    event.preventDefault()
-    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
-
-    try {
-      await blogService.update(blog.id, updatedBlog)
-      refreshBlogs()
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleRemove = async (event) => {
-    event.preventDefault()
-
-    if(window.confirm(`Are you sure you want to remove blog \"${blog.title}\" by \"${blog.author}\"?`)) {
-      try {
-        await blogService.remove(blog.id)
-        refreshBlogs()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  } 
-
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
@@ -61,9 +36,9 @@ const Blog = ({ blog, refreshBlogs, user }) => {
           <button onClick={toggleVisibility}>hide</button>
         </div>
         <div>url: {blog.url}</div>
-        <div>likes: {blog.likes} {" "} <button onClick={handleLike}>like</button></div>
+        <div>likes: {blog.likes} {" "} <button onClick={() => handleLike(blog)}>like</button></div>
         <div>added by: {blog.user.name}</div>
-        {isOwnedByUser ? <div><button onClick={handleRemove}>remove</button></div> : null}
+        {isOwnedByUser ? <div><button onClick={() => handleRemove(blog)}>remove</button></div> : null}
       </div>
     </div>
   )
