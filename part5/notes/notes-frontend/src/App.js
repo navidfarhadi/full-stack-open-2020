@@ -14,8 +14,8 @@ const App = () => {
   const [showAll, setShowAll] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const [user, setUser] = useState(null)
 
@@ -25,8 +25,8 @@ const App = () => {
     noteService
       .getAll()
       .then(initialNotes => {
-      setNotes(initialNotes)
-    })
+        setNotes(initialNotes)
+      })
   }, [])
 
   useEffect(() => {
@@ -36,25 +36,25 @@ const App = () => {
       setUser(user)
       noteService.setToken(user.token)
     }
-  }, [])  
+  }, [])
 
   const toggleImportanceOf = id => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
-  
+
     noteService
-    .update(id, changedNote)
+      .update(id, changedNote)
       .then(returnedNote => {
-      setNotes(notes.map(note => note.id !== id ? note : returnedNote))
-    })
-    .catch(error => {
-      setErrorMessage(
-        `Note '${note.content}' was already removed from server`
-      )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    })    
+        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+      })
+      .catch(() => {
+        setErrorMessage(
+          `Note '${note.content}' was already removed from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
   }
 
   const addNote = (noteObject) => {
@@ -67,8 +67,8 @@ const App = () => {
   }
 
   const notesToShow = showAll
-  ? notes
-  : notes.filter(note => note.important)
+    ? notes
+    : notes.filter(note => note.important)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -80,7 +80,7 @@ const App = () => {
       noteService.setToken(user.token)
       window.localStorage.setItem(
         'loggedNoteappUser', JSON.stringify(user)
-      ) 
+      )
 
       setUser(user)
       setUsername('')
@@ -128,14 +128,14 @@ const App = () => {
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all' }
         </button>
-      </div>   
+      </div>
       <ul>
-        {notesToShow.map(note => 
-            <Note
-              key={note.id}
-              note={note} 
-              toggleImportance={() => toggleImportanceOf(note.id)}
-            />
+        {notesToShow.map(note =>
+          <Note
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         )}
       </ul>
     </div>
