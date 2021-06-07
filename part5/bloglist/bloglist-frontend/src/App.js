@@ -123,7 +123,7 @@ const App = () => {
   }
 
   const blogForm = () => (
-    <>
+    <div className='blogForm'>
       <h2>blogs</h2>
       <Notification message={notification.message} type={notification.type} />
       <p>
@@ -149,7 +149,7 @@ const App = () => {
           />
         )
       }
-    </>
+    </div>
   )
 
   const loginForm = () => (
