@@ -34,5 +34,35 @@ describe('Blog app', function () {
 
       cy.get('html').should('not.contain', 'Matti Luukkainen logged in')
     })
+
+    describe('When logged in', function () {
+      beforeEach(function () {
+        cy.login({ username: 'mluukkai', password: 'salainen' })
+      })
+
+      it('A blog can be created', function () {
+        cy.contains('new blog').click()
+        cy.get('#title').type('testBlog')
+        cy.get('#author').type('testAuthor')
+        cy.get('#url').type('url.test')
+        cy.get('#createBlog-button').click()
+
+        cy.contains('testBlog - testAuthor')
+      })
+
+      it.only('A user can like a blog', function () {
+        cy.contains('new blog').click()
+        cy.get('#title').type('testBlog')
+        cy.get('#author').type('testAuthor')
+        cy.get('#url').type('url.test')
+        cy.get('#createBlog-button').click()
+
+        cy.contains('view').click()
+        cy.get('#like-button').click()
+
+        cy.get('.blogLikes').contains('likes: 1')
+      })
+    })
+
   })
 })
