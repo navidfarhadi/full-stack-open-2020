@@ -21,20 +21,20 @@ const Blog = ({ blog, user, handleLike, handleRemove }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div style={hideWhenVisible}>
-        <div>
+        <div className='blogTitleAndAuthor-MoreInfoHidden'>
           {blog.title} - {blog.author} {' '}
           <button onClick={toggleVisibility}>view</button>
         </div>
       </div>
       <div style={showWhenVisible}>
-        <div>
+        <div className='blogTitleAndAuthor-MoreInfoShown'>
           {blog.title} - {blog.author} {' '}
           <button onClick={toggleVisibility}>hide</button>
         </div>
-        <div>url: {blog.url}</div>
-        <div>likes: {blog.likes} {' '} <button onClick={() => handleLike(blog)}>like</button></div>
+        <div className='blogUrl'>url: {blog.url}</div>
+        <div className='blogLikes'>likes: {blog.likes} {' '} <button onClick={() => handleLike(blog)}>like</button></div>
         <div>added by: {blog.user.name}</div>
         {isOwnedByUser ? <div><button onClick={() => handleRemove(blog)}>remove</button></div> : null}
       </div>
