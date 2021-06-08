@@ -10,7 +10,7 @@
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --detectOpenHandles",
     "build:ui": "rm -rf build && cd ../notes-frontend/ && npm run build --prod && cp -r build ../notes-backend"
   },
-  "author": "Navid Farhadi",
+  "author": "Adam Farhadi",
   "license": "",
   "dependencies": {
     "bcrypt": "^5.0.0",

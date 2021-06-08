@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --detectOpenHandles"
   },
-  "author": "Navid Farhadi",
+  "author": "Adam Farhadi",
   "license": "",
   "dependencies": {
     "bcrypt": "^5.0.0",
