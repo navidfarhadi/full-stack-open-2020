@@ -39,3 +39,5 @@ My solutions for the full stack web development course offered by Open Universit
 * Exercises done: 22/22
 * Key tools/frameworks/libraries used: [React](https://reactjs.org/), [Jest](https://jestjs.io/), [Testing Library](https://testing-library.com/), [Cypress](https://www.cypress.io/), [ESLint](https://eslint.org/)
 * Course instance: FSO2021
+
+![Full Stack Open Certificate issued to Adam Farhadi](adam-farhadi-FSO-certificate.png)
